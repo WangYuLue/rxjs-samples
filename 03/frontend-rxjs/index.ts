@@ -30,10 +30,6 @@ const init = () => {
     const mouseUp$ = fromEvent(document, 'mouseup');
 
     mouseDown$.pipe(
-      tap(res => {
-        // const style = getComputedStyle(box)
-        // console.log(style);
-      }),
       map(event => {
         return {
           pos: getTranslate(box),

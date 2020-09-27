@@ -7,7 +7,9 @@
     "demo01": "cd 01 && parcel index.html",
     "demo02:frontend-native": "cd 02/frontend-native && parcel index.html",
     "demo02:frontend-rxjs": "cd 02/frontend-rxjs && parcel index.html",
-    "demo02:backend": "cd 02/backend && nodemon --watch '*.ts' --exec 'ts-node' index.ts"
+    "demo02:backend": "cd 02/backend && nodemon --watch '*.ts' --exec 'ts-node' index.ts",
+    "demo03:frontend-native": "cd 03/frontend-native && parcel index.html",
+    "demo03:frontend-rxjs": "cd 03/frontend-rxjs && parcel index.html"
   },
   "devDependencies": {
     "@types/koa": "^2.11.4",
@@ -16,6 +18,7 @@
     "@types/react-dom": "^16.9.8",
     "nodemon": "^2.0.4",
     "parcel-plugin-clean-dist": "^0.0.6",
+    "sass": "^1.26.11",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   },

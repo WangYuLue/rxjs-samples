@@ -4,3 +4,14 @@
 
 demo灵感：
 [RxJS 实战篇（一）拖拽](https://jerryzou.com/posts/rxjs-practice-01/)
+
+## 如何启动?
+
+```bash
+
+# 启动前端项目（原生写法）
+yarn demo03:frontend-native
+
+# 启动前端项目（rxjs写法）
+yarn demo03:frontend-rxjs
+```

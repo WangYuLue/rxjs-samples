@@ -9,7 +9,9 @@
     "demo02:frontend-rxjs": "cd 02/frontend-rxjs && parcel index.html",
     "demo02:backend": "cd 02/backend && nodemon --watch '*.ts' --exec 'ts-node' index.ts",
     "demo03:frontend-native": "cd 03/frontend-native && parcel index.html",
-    "demo03:frontend-rxjs": "cd 03/frontend-rxjs && parcel index.html"
+    "demo03:frontend-rxjs": "cd 03/frontend-rxjs && parcel index.html",
+    "demo04:frontend-native": "cd 04/frontend-native && parcel index.html",
+    "demo04:frontend-rxjs": "cd 04/frontend-rxjs && parcel index.html"
   },
   "devDependencies": {
     "@types/koa": "^2.11.4",

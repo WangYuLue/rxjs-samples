@@ -31,11 +31,11 @@ const init = () => {
     const mouseMove$ = fromEvent(document, 'mousemove');
     const mouseUp$ = fromEvent(document, 'mouseup');
 
-    const follows = document.getElementsByClassName('box');
+    const follows = Array.from(document.getElementsByClassName('box'));
 
     const delayBoxes$ = zip(
       interval(100).pipe(startWith(0)),
-      from(Array.from(follows))
+      from(follows)
     ).pipe(
       map(([num, box]) => box),
       filter((box): box is HTMLElement => !!box)

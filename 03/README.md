@@ -10,8 +10,8 @@ demo灵感：
 ```bash
 
 # 启动前端项目（原生写法）
-yarn demo03:frontend-native
+yarn demo04:frontend-native
 
 # 启动前端项目（rxjs写法）
-yarn demo03:frontend-rxjs
+yarn demo04:frontend-rxjs
 ```

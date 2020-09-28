@@ -24,19 +24,19 @@ function setDomPosition(element: HTMLElement, pos: IPosition) {
 }
 
 const init = () => {
-  const box = document.getElementById('box');
+  const box = document.getElementById('head');
 
   if (box) {
     const mouseDown$ = fromEvent(box, 'mousedown');
     const mouseMove$ = fromEvent(document, 'mousemove');
     const mouseUp$ = fromEvent(document, 'mouseup');
 
-    const follow1 = document.getElementById('follow-1');
-    const follow2 = document.getElementById('follow-2');
+    const follows = document.getElementsByClassName('box');
 
-    const delayBoxes$ = zip(interval(100).pipe(
-      startWith(0)
-    ), from([box, follow1, follow2])).pipe(
+    const delayBoxes$ = zip(
+      interval(100).pipe(startWith(0)),
+      from(Array.from(follows))
+    ).pipe(
       map(([num, box]) => box),
       filter((box): box is HTMLElement => !!box)
     )
@@ -67,9 +67,7 @@ const init = () => {
       }),
       mergeMap(position => {
         return delayBoxes$.pipe(
-          tap(box => {
-            setDomPosition(box, position)
-          })
+          tap(box => setDomPosition(box, position))
         )
       })
     ).subscribe()

@@ -1,32 +1,20 @@
-#box {
+$colors: orange red blue  green cyan yellow purple;
+
+.box {
   width:60px;
   height:60px;
-  background:orange;
   color: white;
   position: absolute;
   transform: translate(0px, 0px);
   transition: all 0.1s ease-out;
   cursor:pointer;
+
+  @for $i from 1 through length($colors) {
+    $color: nth($colors, $i);
+    &:nth-child(#{$i}){
+      z-index: $i * -1;
+      background: $color;
+    }
+  }
 }
 
-#follow-1 {
-  width:60px;
-  height:60px;
-  background:red;
-  position: absolute;
-  transform: translate(0px, 0px);
-  transition: all 0.1s ease-out;
-  z-index: -1;
-  cursor:pointer;
-}
-
-#follow-2 {
-  width:60px;
-  height:60px;
-  transform: translate(0px, 0px);
-  background:blue;
-  position: absolute;
-  transition: all 0.1s ease-out;
-  z-index: -2;
-  cursor:pointer;
-}

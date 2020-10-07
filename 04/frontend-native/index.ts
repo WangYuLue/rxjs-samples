@@ -21,9 +21,9 @@ function setDomPosition(element: HTMLElement, pos: IPosition) {
 }
 
 const init = () => {
-  const box = document.getElementById('head');
+  const $box = document.getElementById('head');
 
-  if (box) {
+  if ($box) {
     let isMoving = false;
     let boxPosition: IPosition;
     let mouseStartPosition: IPosition;
@@ -53,7 +53,7 @@ const init = () => {
       isMoving = true;
       const { clientX, clientY } = event as MouseEvent;
       mouseStartPosition = { left: clientX, top: clientY };
-      boxPosition = getDomPosition(box);
+      boxPosition = getDomPosition($box);
     }
     const onMouseMove = event => {
       if (isMoving) {
@@ -68,7 +68,7 @@ const init = () => {
       }
     }
 
-    box.addEventListener('mousedown', onMouseDown);
+    $box.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }

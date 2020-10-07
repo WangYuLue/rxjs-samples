@@ -18,10 +18,10 @@ function setDomPosition(element: HTMLElement, pos: IPosition) {
 }
 
 const init = () => {
-  const box = document.getElementById('box');
+  const $box = document.getElementById('box');
 
-  if (box) {
-    const mouseDown$ = fromEvent(box, 'mousedown');
+  if ($box) {
+    const mouseDown$ = fromEvent($box, 'mousedown');
     const mouseMove$ = fromEvent(document, 'mousemove');
     const mouseUp$ = fromEvent(document, 'mouseup');
 
@@ -29,7 +29,7 @@ const init = () => {
       map(event => {
         const { clientX, clientY } = event as MouseEvent
         return {
-          boxPositon: getDomPosition(box),
+          boxPositon: getDomPosition($box),
           mouseStartPosition: {
             top: clientY,
             left: clientX
@@ -50,7 +50,7 @@ const init = () => {
         )
       })
     ).subscribe((pos) => {
-      setDomPosition(box, pos)
+      setDomPosition($box, pos)
     })
   }
 }

@@ -15,9 +15,9 @@ function setDomPosition(element: HTMLElement, pos: IPosition) {
 }
 
 const init = () => {
-  const box = document.getElementById('box');
+  const $box = document.getElementById('box');
 
-  if (box) {
+  if ($box) {
     let isMoving = false;
     let boxPosition: IPosition;
     let mouseStartPosition: IPosition;
@@ -27,13 +27,13 @@ const init = () => {
       isMoving = true;
       const { clientX, clientY } = event as MouseEvent;
       mouseStartPosition = { left: clientX, top: clientY };
-      boxPosition = getDomPosition(box);
+      boxPosition = getDomPosition($box);
     }
     const onMouseMove = event => {
       if (isMoving) {
         const { clientX, clientY } = event as MouseEvent;
         mouseEndPosition = { left: clientX, top: clientY };
-        setDomPosition(box, {
+        setDomPosition($box, {
           left: mouseEndPosition.left - mouseStartPosition.left + boxPosition.left,
           top: mouseEndPosition.top - mouseStartPosition.top + boxPosition.top
         })
@@ -45,7 +45,7 @@ const init = () => {
       }
     }
 
-    box.addEventListener('mousedown', onMouseDown);
+    $box.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }

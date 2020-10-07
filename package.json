@@ -11,7 +11,9 @@
     "demo03:frontend-native": "cd 03/frontend-native && parcel index.html",
     "demo03:frontend-rxjs": "cd 03/frontend-rxjs && parcel index.html",
     "demo04:frontend-native": "cd 04/frontend-native && parcel index.html",
-    "demo04:frontend-rxjs": "cd 04/frontend-rxjs && parcel index.html"
+    "demo04:frontend-rxjs": "cd 04/frontend-rxjs && parcel index.html",
+    "demo05:frontend-native": "cd 05/frontend-native && parcel index.html",
+    "demo05:frontend-rxjs": "cd 05/frontend-rxjs && parcel index.html"
   },
   "devDependencies": {
     "@types/koa": "^2.11.4",

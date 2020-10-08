@@ -14,7 +14,7 @@ const _mockAjax = (): Promise<IData> => {
   })
 }
 
-const _mockCanCancelAjax = (id: string): Promise<IData & { id: string }> => {
+const _mockAjaxWithId = (id: string): Promise<IData & { id: string }> => {
   return _mockAjax().then(res => ({ ...res, id }))
 }
 
@@ -36,7 +36,7 @@ const init = () => {
     setInterval(() => { // 定时器
       if (isMoveIn) {
         postId = String(Math.random());
-        _mockCanCancelAjax(postId).then(res => {
+        _mockAjaxWithId(postId).then(res => {
           if (isMoveIn && res.id === postId) { // 如果请求id不一致，则表示超时，于是丢掉请求
             render(res)
           }

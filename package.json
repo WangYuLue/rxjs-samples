@@ -33,6 +33,7 @@
   "dependencies": {
     "koa": "^2.13.0",
     "koa-router": "^9.4.0",
+    "lodash": "^4.17.20",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rxjs": "^6.6.3"

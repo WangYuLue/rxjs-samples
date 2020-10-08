@@ -1,5 +1,5 @@
-import { fromEvent } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { fromEvent, zip, interval, from } from 'rxjs';
+import { filter, map, mergeMap, switchMap, takeUntil, tap, startWith } from 'rxjs/operators';
 
 interface IPosition {
   top: number;
@@ -11,19 +11,35 @@ function getDomPosition(dom: HTMLElement): IPosition {
   return { top, left }
 }
 
+// function setDomPosition(element: HTMLElement, pos: IPosition) {
+//   const { top, left } = pos;
+//   element.style.top = `${top}px`;
+//   element.style.left = `${left}px`;
+// }
+
+// 这边使用 translate 来避免频繁重排，要不然会非常卡顿
 function setDomPosition(element: HTMLElement, pos: IPosition) {
   const { top, left } = pos;
-  element.style.top = `${top}px`;
-  element.style.left = `${left}px`;
+  element.style.transform = `translate(${left}px, ${top}px)`
 }
 
 const init = () => {
-  const $box = document.getElementById('box');
+  const $box = document.getElementById('head');
 
   if ($box) {
     const mouseDown$ = fromEvent($box, 'mousedown');
     const mouseMove$ = fromEvent(document, 'mousemove');
     const mouseUp$ = fromEvent(document, 'mouseup');
+
+    const follows = Array.from(document.getElementsByClassName('box'));
+
+    const delayBoxes$ = zip(
+      interval(100).pipe(startWith(0)),
+      from(follows)
+    ).pipe(
+      map(([num, box]) => box),
+      filter((box): box is HTMLElement => !!box)
+    )
 
     mouseDown$.pipe(
       map(event => {
@@ -48,10 +64,13 @@ const init = () => {
           }),
           takeUntil(mouseUp$)
         )
+      }),
+      mergeMap(position => {
+        return delayBoxes$.pipe(
+          tap(box => setDomPosition(box, position))
+        )
       })
-    ).subscribe((pos) => {
-      setDomPosition($box, pos)
-    })
+    ).subscribe()
   }
 }
 

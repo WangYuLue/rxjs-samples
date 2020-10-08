@@ -1,11 +1,10 @@
-#box{
-  margin:120px;
-  width: 300px;
-  height: 300px;
+#box {
+  width:60px;
+  height:60px;
+  background:orange;
+  border: 5px solid red;
   color: white;
-  font-size: 24px;
-  border: gray 1px solid;
-  padding: 10px;
-  background: bisque;
-  cursor: pointer;
+  position: absolute;
+  transition: all 0.1s ease-out;
+  cursor:pointer;
 }

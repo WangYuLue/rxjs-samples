@@ -1,54 +1,56 @@
-interface IData {
-  code: number;
-  data: string
+interface IPosition {
+  top: number;
+  left: number;
 }
 
-const _mockAjax = (): Promise<IData> => {
-  return new Promise(resolve => {
-    // 延时设定在 700 ～ 1200 毫秒，来模拟后面1000毫秒延时的处理
-    const delay = Math.floor(Math.random() * 500) + 700;
-    setTimeout(() => resolve({
-      code: 200,
-      data: String(delay)
-    }), delay);
-  })
+function getDomPosition(dom: HTMLElement): IPosition {
+  const { top, left } = dom.getBoundingClientRect()
+  return { top, left }
 }
 
-const _mockCanCancelAjax = (id: string): Promise<IData & { id: string }> => {
-  return _mockAjax().then(res => ({ ...res, id }))
+function setDomPosition(element: HTMLElement, pos: IPosition) {
+  const { top, left } = pos;
+  element.style.top = `${top}px`;
+  element.style.left = `${left}px`;
 }
 
 const init = () => {
   const $box = document.getElementById('box');
 
   if ($box) {
-    let isMoveIn: boolean;
+    let isMoving = false;
+    let boxPosition: IPosition;
+    let mouseStartPosition: IPosition;
+    let mouseEndPosition: IPosition;
 
-    const render = (res: IData) => {
-      $box.innerHTML = res.data;
+    const onMouseDown = event => {
+      isMoving = true;
+      const { clientX, clientY } = event as MouseEvent;
+      mouseStartPosition = { left: clientX, top: clientY };
+      boxPosition = getDomPosition($box);
     }
-
-    const onMouseleave = () => isMoveIn = false;
-    const onMouseenter = () => isMoveIn = true;
-
-    let postId: string;
-
-    setInterval(() => { // 定时器
-      if (isMoveIn) {
-        postId = String(Math.random());
-        _mockCanCancelAjax(postId).then(res => {
-          if (isMoveIn && res.id === postId) { // 如果请求id不一致，则表示超时，于是丢掉请求
-            render(res)
-          }
+    const onMouseMove = event => {
+      if (isMoving) {
+        const { clientX, clientY } = event as MouseEvent;
+        mouseEndPosition = { left: clientX, top: clientY };
+        setDomPosition($box, {
+          left: mouseEndPosition.left - mouseStartPosition.left + boxPosition.left,
+          top: mouseEndPosition.top - mouseStartPosition.top + boxPosition.top
         })
       }
-    }, 1000)
+    }
+    const onMouseUp = () => {
+      if (isMoving) {
+        isMoving = false;
+      }
+    }
 
-    $box.addEventListener('mouseleave', onMouseleave);
-    $box.addEventListener('mouseenter', onMouseenter);
+    $box.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 }
 
 init();
 
-export { };
+export { }

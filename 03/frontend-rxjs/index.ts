@@ -1,57 +1,33 @@
-import { fromEvent } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { fromEvent, Observable } from 'rxjs';
+import { ajax } from "rxjs/ajax"
+import { debounceTime, pluck, switchMap } from 'rxjs/operators';
 
-interface IPosition {
-  top: number;
-  left: number;
+interface IAPIList {
+  code: number;
+  data: string[];
 }
 
-function getDomPosition(dom: HTMLElement): IPosition {
-  const { top, left } = dom.getBoundingClientRect()
-  return { top, left }
+const getList = (keyword: string): Observable<IAPIList> => {
+  return ajax.get(`http://localhost:3010/list?keyword=${keyword}`).pipe(pluck('response'))
 }
 
-function setDomPosition(element: HTMLElement, pos: IPosition) {
-  const { top, left } = pos;
-  element.style.top = `${top}px`;
-  element.style.left = `${left}px`;
+const observer = (res: IAPIList) => {
+  const $list = document.getElementById('list');
+  if ($list) {
+    const html = res.data.reduce((html, item) => (html += `<div>${item}</div>`, html), '')
+    $list.innerHTML = html;
+  }
 }
 
 const init = () => {
-  const $box = document.getElementById('box');
+  const $input = document.getElementById('keyword');
 
-  if ($box) {
-    const mouseDown$ = fromEvent($box, 'mousedown');
-    const mouseMove$ = fromEvent(document, 'mousemove');
-    const mouseUp$ = fromEvent(document, 'mouseup');
-
-    mouseDown$.pipe(
-      map(event => {
-        const { clientX, clientY } = event as MouseEvent
-        return {
-          boxPositon: getDomPosition($box),
-          mouseStartPosition: {
-            top: clientY,
-            left: clientX
-          }
-        }
-      }),
-      switchMap(position => {
-        const { boxPositon, mouseStartPosition } = position
-        return mouseMove$.pipe(
-          map(event => {
-            const { clientX, clientY } = event as MouseEvent
-            return {
-              left: clientX - mouseStartPosition.left + boxPositon.left,
-              top: clientY - mouseStartPosition.top + boxPositon.top
-            }
-          }),
-          takeUntil(mouseUp$)
-        )
-      })
-    ).subscribe((pos) => {
-      setDomPosition($box, pos)
-    })
+  if ($input) {
+    fromEvent($input, 'input').pipe(
+      pluck('target', 'value'),
+      debounceTime(300),
+      switchMap(keyword => getList(keyword as string))
+    ).subscribe(observer)
   }
 }
 

@@ -8,20 +8,46 @@ function getDomPosition(dom: HTMLElement): IPosition {
   return { top, left }
 }
 
+// function setDomPosition(element: HTMLElement, pos: IPosition) {
+//   const { top, left } = pos;
+//   element.style.top = `${top}px`;
+//   element.style.left = `${left}px`;
+// }
+
+// 这边使用 translate 来避免频繁重排，要不然会非常卡顿
 function setDomPosition(element: HTMLElement, pos: IPosition) {
   const { top, left } = pos;
-  element.style.top = `${top}px`;
-  element.style.left = `${left}px`;
+  element.style.transform = `translate(${left}px, ${top}px)`
 }
 
 const init = () => {
-  const $box = document.getElementById('box');
+  const $box = document.getElementById('head');
 
   if ($box) {
     let isMoving = false;
     let boxPosition: IPosition;
     let mouseStartPosition: IPosition;
     let mouseEndPosition: IPosition;
+
+    const follows = Array.from(document.getElementsByClassName('box'));
+
+    const delayMove = (doms: HTMLElement[], timeout: number) => {
+      const cpBoxPosition = boxPosition;
+      const cpMouseStartPosition = mouseStartPosition;
+      const cpMouseEndPosition = mouseEndPosition;
+      const _setDomPosition = (dom) => {
+        setDomPosition(dom, {
+          left: cpMouseEndPosition.left - cpMouseStartPosition.left + cpBoxPosition.left,
+          top: cpMouseEndPosition.top - cpMouseStartPosition.top + cpBoxPosition.top
+        })
+      }
+      _setDomPosition(doms[0])
+      for (let x = 1; x < doms.length; x++) {
+        setTimeout(() => {
+          _setDomPosition(doms[x])
+        }, timeout * x)
+      }
+    }
 
     const onMouseDown = event => {
       isMoving = true;
@@ -33,10 +59,7 @@ const init = () => {
       if (isMoving) {
         const { clientX, clientY } = event as MouseEvent;
         mouseEndPosition = { left: clientX, top: clientY };
-        setDomPosition($box, {
-          left: mouseEndPosition.left - mouseStartPosition.left + boxPosition.left,
-          top: mouseEndPosition.top - mouseStartPosition.top + boxPosition.top
-        })
+        delayMove(follows as HTMLElement[], 100)
       }
     }
     const onMouseUp = () => {

@@ -1,79 +1,54 @@
-interface IPosition {
-  top: number;
-  left: number;
+interface IData {
+  code: number;
+  data: string
 }
 
-function getDomPosition(dom: HTMLElement): IPosition {
-  const { top, left } = dom.getBoundingClientRect()
-  return { top, left }
+const _mockAjax = (): Promise<IData> => {
+  return new Promise(resolve => {
+    // 延时设定在 700 ～ 1200 毫秒，来模拟后面1000毫秒延时的处理
+    const delay = Math.floor(Math.random() * 500) + 700;
+    setTimeout(() => resolve({
+      code: 200,
+      data: String(delay)
+    }), delay);
+  })
 }
 
-// function setDomPosition(element: HTMLElement, pos: IPosition) {
-//   const { top, left } = pos;
-//   element.style.top = `${top}px`;
-//   element.style.left = `${left}px`;
-// }
-
-// 这边使用 translate 来避免频繁重排，要不然会非常卡顿
-function setDomPosition(element: HTMLElement, pos: IPosition) {
-  const { top, left } = pos;
-  element.style.transform = `translate(${left}px, ${top}px)`
+const _mockCanCancelAjax = (id: string): Promise<IData & { id: string }> => {
+  return _mockAjax().then(res => ({ ...res, id }))
 }
 
 const init = () => {
-  const $box = document.getElementById('head');
+  const $box = document.getElementById('box');
 
   if ($box) {
-    let isMoving = false;
-    let boxPosition: IPosition;
-    let mouseStartPosition: IPosition;
-    let mouseEndPosition: IPosition;
+    let isMoveIn: boolean;
 
-    const follows = Array.from(document.getElementsByClassName('box'));
+    const render = (res: IData) => {
+      $box.innerHTML = res.data;
+    }
 
-    const delayMove = (doms: HTMLElement[], timeout: number) => {
-      const cpBoxPosition = boxPosition;
-      const cpMouseStartPosition = mouseStartPosition;
-      const cpMouseEndPosition = mouseEndPosition;
-      const _setDomPosition = (dom) => {
-        setDomPosition(dom, {
-          left: cpMouseEndPosition.left - cpMouseStartPosition.left + cpBoxPosition.left,
-          top: cpMouseEndPosition.top - cpMouseStartPosition.top + cpBoxPosition.top
+    const onMouseleave = () => isMoveIn = false;
+    const onMouseenter = () => isMoveIn = true;
+
+    let postId: string;
+
+    setInterval(() => { // 定时器
+      if (isMoveIn) {
+        postId = String(Math.random());
+        _mockCanCancelAjax(postId).then(res => {
+          if (isMoveIn && res.id === postId) { // 如果请求id不一致，则表示超时，于是丢掉请求
+            render(res)
+          }
         })
       }
-      _setDomPosition(doms[0])
-      for (let x = 1; x < doms.length; x++) {
-        setTimeout(() => {
-          _setDomPosition(doms[x])
-        }, timeout * x)
-      }
-    }
+    }, 1000)
 
-    const onMouseDown = event => {
-      isMoving = true;
-      const { clientX, clientY } = event as MouseEvent;
-      mouseStartPosition = { left: clientX, top: clientY };
-      boxPosition = getDomPosition($box);
-    }
-    const onMouseMove = event => {
-      if (isMoving) {
-        const { clientX, clientY } = event as MouseEvent;
-        mouseEndPosition = { left: clientX, top: clientY };
-        delayMove(follows as HTMLElement[], 100)
-      }
-    }
-    const onMouseUp = () => {
-      if (isMoving) {
-        isMoving = false;
-      }
-    }
-
-    $box.addEventListener('mousedown', onMouseDown);
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    $box.addEventListener('mouseleave', onMouseleave);
+    $box.addEventListener('mouseenter', onMouseenter);
   }
 }
 
 init();
 
-export { }
+export { };

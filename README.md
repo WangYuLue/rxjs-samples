@@ -1,5 +1,7 @@
 # 一些基于 RXJS 的有趣 Demo
 
+![](./06/images/01.gif)
+
 interesting demos powered by `rxjs`.
 
 the build tool is `parcel`.
